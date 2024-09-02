@@ -11,4 +11,3 @@ class AuthServices {
 
 // for signup
 
-// Future<String> signUpUser({}) {}
