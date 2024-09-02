@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "908788633325",
+    "firebase_url": "https://chat-app-53c3a-default-rtdb.firebaseio.com",
+    "project_id": "chat-app-53c3a",
+    "storage_bucket": "chat-app-53c3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908788633325:android:48a5b61d8f6fc7482f86e4",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1OZ9CY3bcpVaMyujKAva3HvmvgXSgnmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908788633325:android:c29dcd20ffbce7392f86e4",
+        "android_client_info": {
+          "package_name": "com.example.chat_app2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1OZ9CY3bcpVaMyujKAva3HvmvgXSgnmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908788633325:android:d93e108caa73bb062f86e4",
+        "android_client_info": {
+          "package_name": "nitish.com.chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1OZ9CY3bcpVaMyujKAva3HvmvgXSgnmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
