@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/auth_screen.dart';
 import 'package:chat_app/widgets/chat_messages.dart';
 import 'package:chat_app/widgets/new_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthScreen()));
             },
             icon: const Icon(Icons.exit_to_app),
             color: Theme.of(context).colorScheme.primary,
@@ -58,9 +59,14 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
               child: Stack(children: [
-            Image.asset(
-              'assets/images/back.jpg',
-              fit: BoxFit.fitHeight,
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.3,
+                child: Image.asset(
+                  'assets/images/back.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             const ChatMessages()
           ])),

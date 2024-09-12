@@ -43,32 +43,40 @@ class _NewMessageState extends State<NewMessage> {
       'username': userData.data()!['username'],
       'userImage': userData.data()!['image_url'],
     });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 15, left: 10, bottom: 14),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _messageController,
-              textCapitalization: TextCapitalization.sentences,
-              autocorrect: true,
-              enableSuggestions: true,
-              decoration: const InputDecoration(labelText: 'Send a message...'),
+    return Container(padding: const EdgeInsets.symmetric(horizontal: 10),
+      height: 60,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          shape: BoxShape.rectangle,
+          boxShadow: const [
+            BoxShadow(blurRadius: 0.5, color: Colors.grey, spreadRadius: 5)
+          ]),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15, left: 10, bottom: 14),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _messageController,
+                textCapitalization: TextCapitalization.sentences,
+                autocorrect: true,
+                enableSuggestions: true,
+                decoration:
+                    const InputDecoration(labelText: 'Send a message...'),
+              ),
             ),
-          ),
-          IconButton(
-              onPressed: _submitMessage,
-              icon: Icon(
-                Icons.send,
-                color: Theme.of(context).colorScheme.primary,
-              ))
-        ],
+            IconButton(
+                onPressed: _submitMessage,
+                icon: Icon(
+                  Icons.send,
+                  color: Theme.of(context).colorScheme.primary,
+                ))
+          ],
+        ),
       ),
     );
   }

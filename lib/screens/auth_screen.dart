@@ -1,12 +1,15 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/services/google_auth.dart';
 import 'package:chat_app/widgets/user_image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../ForgotPassword/forgot_password.dart';
 
 var _firebase = FirebaseAuth.instance;
 
@@ -32,6 +35,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (!isValid || (!_isLogin && _selectedImage == null)) {
       // Show error message to the user if form is invalid or no image selected for sign-up
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please fill in all fields and select an image.')),
+      );
       return;
     }
 
@@ -51,26 +58,34 @@ class _AuthScreenState extends State<AuthScreen> {
         userCredentials = await _firebase.createUserWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPass);
 
-        final storageRef = FirebaseStorage.instance
-            .ref()
-            .child('user_images')
-            .child('${userCredentials.user!.uid}.jpg');
+        if (_selectedImage != null) {
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('user_images')
+              .child('${userCredentials.user!.uid}.jpg');
 
-        await storageRef.putFile(_selectedImage!);
-        final imageUrl =
-            await storageRef.getDownloadURL(); // Await the URL retrieval
+          await storageRef.putFile(_selectedImage!);
+          final imageUrl =
+              await storageRef.getDownloadURL(); // Await the URL retrieval
 
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredentials.user!.uid)
-            .set({
-          'username':
-              _enteredUsername, // Placeholder, consider using a variable if dynamic
-          'email': _enteredEmail,
-          'image_url': imageUrl,
-        }).then((value) {
-          log('Data Inserted');
-        });
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredentials.user!.uid)
+              .set({
+            'username':
+                _enteredUsername, // Placeholder, consider using a variable if dynamic
+            'email': _enteredEmail,
+            'image_url': imageUrl,
+          }).then((value) {
+            log('Data Inserted');
+          });
+        } else {
+          print('No Image selected');
+        }
+      }
+      if (mounted && userCredentials.user != null) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (ctx) => const ChatScreen()));
       }
     } on FirebaseAuthException catch (error) {
       if (error.code == 'email-already-in-use') {
@@ -165,7 +180,11 @@ class _AuthScreenState extends State<AuthScreen> {
                             if (!_isLogin)
                               TextFormField(
                                 decoration: const InputDecoration(
-                                    labelText: 'Username', prefixIcon: Icon(Icons.person, color: Colors.grey,)),
+                                    labelText: 'Username',
+                                    prefixIcon: Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                    )),
                                 enableSuggestions: false,
                                 validator: (value) {
                                   if (value == null ||
@@ -200,20 +219,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             const SizedBox(
                               height: 16,
                             ),
-                            GestureDetector(
-                              onTap: (){},
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 35),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    'Forgot Password?',
-                                    style: TextStyle(
-                                        color: Colors.blueAccent,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
+                            const ForgotPassword(),
+                            const SizedBox(
+                              height: 16,
                             ),
                             if (_isAuthenticating) // condition to check whether in sign in process or not
                               const CircularProgressIndicator(), // Loading Spinner
@@ -269,6 +277,70 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const Text('  or  '),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: Colors.black,
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 24,
+                  ),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade800),
+                      onPressed: () async {
+                        final UserCredential? userCredential =
+                            await FirebaseServices().signInWithGoogle();
+                        if (userCredential != null) {
+                          // If sign in is successful navigate to chat screen
+                          if (mounted) {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (ctx) => const ChatScreen()));
+                          }
+                        } else {
+                          // If sign in fails, show error message
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  'Google Sign-In failed. Please try again.')));
+                        }
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/images/google.png',
+                            height: 35,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          const Text(
+                            'Continue with Google',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 20),
+                          )
+                        ],
+                      )),
                 )
               ],
             ),
